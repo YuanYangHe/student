@@ -9,8 +9,16 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity {
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.net.Socket;
 
+public class MainActivity extends AppCompatActivity {
+    connectthread abcc;
+    public Socket soc;
+    public BufferedReader brt;
+    public BufferedWriter bwt;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,16 +26,33 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-    }
 
+
+
+        abcc = new connectthread();
+        abcc.start();
+
+    }
+    class connectthread extends Thread
+    {
+        connectuse connect = (connectuse)MainActivity.this.getApplication();
+        @Override
+        public void run() {
+            try {
+                connect.init();
+                soc = connect.getSocket();
+                brt = connect.getread();
+                bwt = connect.getwrite();
+                bwt.write("wxyz");
+                bwt.write("test2");
+                bwt.write("test_student");
+
+
+            }catch (IOException e){
+
+            }
+        }
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
